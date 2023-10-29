@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<head>
+    <title> Welcome to <%= recipeSharingName %> </title>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+
+<body>
+    <h1> Login for <%= recipeSharingName %> </h1>
+    <form method="post" action="/loggedin">
+        <!-- form fields required to sign in -->
+        <label>Username: <input id = "user" type="text" name="user" value="user" /></label>
+        <label>Password: <input id = "password" type="password" name="password" value="password" /></label>
+        <!-- button that users will press to be logged in -->
+        <input type="submit" value="Login"/>
+    </form>
+</body>
+</html>

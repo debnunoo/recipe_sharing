@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<head>
+    <title> Welcome to <%= recipeSharingName %> </title>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+
+<body>
+    <h1> Register for <%= recipeSharingName %> </h1>
+    <!-- creating a post form so that the users details are stored within the database -->
+    <!-- users will be redirected a 'registered' page when finished signing up -->
+    <form method="post" action="/registerd">
+        <!-- form fields needed -->
+        <label>First name: <input id = "first" type="text" name="first" value="first name" /></label>
+        <label>Surname: <input id = "last" type="text" name="last" value="last name" /></label>
+        <label>Email: <input id = "email" type="email" name="email" value="email" required="@" /></label>
+        <label>Username: <input id = "user" type="text" name="user" value="user" /></label>
+        <label>Password: <input id = "password" type="password" name="password" value="password" /></label>
+        <!-- button that users will press to redirect to the 'registered' page -->
+        <input type="submit" value="Register"/>
+    </form>
+</body>
+</html>

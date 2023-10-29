@@ -9,4 +9,12 @@ module.exports = function(app, recipeData) {
     app.get('/about', function(req, res) {
         res.render('about.ejs', recipeData)
     });
+    // Register page
+    app.get('/register', function(req, res) {
+        res.render('register.ejs', recipeData)
+    });
+    // Login page
+    app.get('/login', function(req, res) {
+        res.render('login.ejs', recipeData)
+    });
 }
