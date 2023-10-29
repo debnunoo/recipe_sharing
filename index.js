@@ -23,7 +23,7 @@ app.set('view engine', 'ejs');
 app.engine('html', ejs.renderFile)
 
 // Defining the data
-var recipeData = {recipeSharingName: " "}
+var recipeData = {recipeSharingName: "Recipe Swap Central"}
 
 // Requires the main.js file inside the routes folder
 // Passing in the Express app and data as arguments.
