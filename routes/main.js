@@ -5,4 +5,8 @@ module.exports = function(app, recipeData) {
     app.get('/', function(req, res) {
         res.render('index.ejs', recipeData)
     });
+    // About page
+    app.get('/about', function(req, res) {
+        res.render('about.ejs', recipeData)
+    });
 }
