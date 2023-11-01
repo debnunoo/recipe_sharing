@@ -1,16 +1,53 @@
 // Importing the modules that will be used within the application
-var express = require('express')
-var ejs = require('ejs')
-var bodyParser = require('body-parser')
+var express = require('express');
+var ejs = require('ejs');
+var bodyParser = require('body-parser');
+var mysql = require('mysql');
+var session = require('express-session');
+var validator = require('express-validator');
+var sanitizer = require('express-sanitizer');
+
+
 
 
 // Creating the express application object
 const app = express()
 const port = 8000
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(sanitizer());
+app.use(session({
+    secret: 'somerandomstuff',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: 600000
+    }
+}));
 
 // Setting up the path to read into the css file
 app.use(express.static(__dirname + '/css'));
+
+
+// Creating and defining database connection to MySQL
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'recipeuser',
+    password: 'admin_recipe',
+    database: 'recipe_sharing'
+});
+
+// Connecting to the database
+db.connect((err) => {
+    if(err) {
+        throw err;
+    }
+    else {
+        console.log('Connected to the database');
+    }
+});
+
+global.db = db;
+
 
 // Setting the directory where Express will pick up the HTML files
 app.set('views', __dirname + '/views');

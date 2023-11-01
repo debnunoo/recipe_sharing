@@ -11,8 +11,8 @@
     <h1> Login for <%= recipeSharingName %> </h1>
     <form method="post" action="/loggedin">
         <!-- form fields required to sign in -->
-        <label>Username: <input id = "user" type="text" name="user" value="user" /></label>
-        <label>Password: <input id = "password" type="password" name="password" value="password" /></label>
+        <label>Username: <input id = "user" type="text" name="user" value="eg. jbond" /></label>
+        <label>Password: <input id = "password" type="password" name="password" value="password" min="8" max="15" /></label>
         <!-- button that users will press to be logged in -->
         <input type="submit" value="Login"/>
     </form>

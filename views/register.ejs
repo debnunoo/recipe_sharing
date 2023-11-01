@@ -8,17 +8,19 @@
     <h1> Register for <%= recipeSharingName %> </h1>
     <!-- creating a post form so that the users details are stored within the database -->
     <!-- users will be redirected a 'registered' page when finished signing up -->
-    <form method="post" action="/registerd">
+    <form method="post" action="/registered">
         <!-- form fields needed -->
-        <label>First name: <input id = "first" type="text" name="first" value="first name" /></label>
+        <label>First name: <input id = "first" type="text" name="first" value="eg. James" /></label>
         <br>
-        <label>Surname: <input id = "last" type="text" name="last" value="last name" /></label>
+        <label>Surname: <input id = "last" type="text" name="last" value="eg. Bond" /></label>
         <br>
-        <label>Email: <input id = "email" type="email" name="email" value="email" required="@" /></label>
+        <label>Email: <input id = "email" type="email" name="email" value="eg. jbond@email.com" required="@" /></label>
         <br>
-        <label>Username: <input id = "user" type="text" name="user" value="user" /></label>
+        <label>Username: <input id = "user" type="text" name="user" value="jbond" /></label>
         <br>
-        <label>Password: <input id = "password" type="password" name="password" value="password" /></label>
+        <label>Password: <input id = "password" type="password" name="password" value="password" min="8" max="15"/></label>
+        <br>
+        <label>Re-type Password: <input id = "retype_password" type="password" name="retype_password" value="password" min="8" max="15"/></label>
         <br>
         <!-- button that users will press to redirect to the 'registered' page -->
         <input type="submit" value="Register"/>
