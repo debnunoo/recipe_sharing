@@ -11,10 +11,18 @@
     <h1> Login for <%= recipeSharingName %> </h1>
     <form method="post" action="/loggedin">
         <!-- form fields required to sign in -->
-        <label>Username: <input id = "user" type="text" name="user" value="eg. jbond" /></label>
-        <label>Password: <input id = "password" type="password" name="password" value="password" min="8" max="15" /></label>
+        <label>Username: <input id = "user" type="text" name="user" placeholder="eg. jbond" /></label>
+        <label>Password: <input id = "password" type="password" name="password" placeholder="password" min="8" max="15" /></label>
         <!-- button that users will press to be logged in -->
         <input type="submit" value="Login"/>
     </form>
 </body>
+<footer>
+    <!-- adding a back button to allow users to navigate back to the previous page if they wish -->
+    <div class="back_button">
+        <a href="javascript:history.back()">
+            <img src="assets\back_button.png" alt="Back Button">
+        </a>
+    </div>
+</footer>
 </html>

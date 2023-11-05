@@ -92,8 +92,6 @@ module.exports = function(app, recipeData) {
 
     });
     
-
-
     // Login page
     app.get('/login', function(req, res) {
         res.render('login.ejs', recipeData)
@@ -143,6 +141,7 @@ module.exports = function(app, recipeData) {
         }
 
     });
+    // Route that will log out users when link is pressed
     app.get('/logout', redirectLogin, (req, res) => {
           // destroying the session after the user has logged out
           req.session.destroy(err => {
@@ -153,4 +152,90 @@ module.exports = function(app, recipeData) {
                 res.send('You are now logged out. Please return to <a href='+'./'+'>Home</a>');
             })
     });
+    // Listing the recipes
+    app.get('/list_recipes', redirectLogin, function(req, res) {
+        let sqlquery = `SELECT recipe_name, cuisine, recipe_description, ingredients, recipe_method
+                        FROM recipes
+                        GROUP BY recipe_name, cuisine, recipe_description, ingredients, recipe_method`
+
+        db.query(sqlquery, (err, result) => {
+            if(err) {
+                res.redirect('./');
+            }
+            else {
+                let newData = Object.assign({}, recipeData, {availableRecipes:result});
+                console.log(newData);
+                res.render('list_recipes.ejs', newData);
+            }
+
+        });
+    });
+    // Adding a Recipe page
+    app.get('/add_recipe', redirectLogin, function(req, res) {
+        res.render('add_recipe.ejs', recipeData);
+    });
+    // Route that will handle and process recipes being added to the recipes table
+    app.post('/recipeadded', redirectLogin, function(req, res) {
+        // saving the recipes data into the database
+        let sqlquery = `INSERT INTO 
+                        recipes(recipe_name, cuisine, recipe_description, ingredients, recipe_method)
+                        VALUES(?, ?, ?, ?, ?)`
+        // Selecting and sanitizing the fields that will be added into the recipes database
+        let newrecord = [req.sanitize(req.body.name), req.sanitize(req.body.cuisine), req.sanitize(req.body.description), req.sanitize(req.body.ingredients), req.sanitize(req.body.method)]
+
+        db.query(sqlquery, newrecord, (err, result) => {
+            if(err) {
+                return console.error(err.message);
+            }
+            else {
+                // Message that will be sent to confirm recipe has successfully added
+                res.send('Recipe has been successfully added! View it here: <a href="/list_recipes"> View Recipes </a> or return to the home page <a href='+'./'+'>Home</a>.');
+            }
+        });
+    });
+    // Route that will handle a recipe being deleted
+    app.post('/deleterecipe/:recipeId', redirectLogin, function(req, res) {
+        // accessing the recipe_id parameter
+        const recipeId = req.params.recipeId;
+        // Deleting all recipe information when the recipe matches the id (the unique identifier)
+        let sqlquery = `DELETE FROM recipes
+                        WHERE recipe_id = ?`
+
+        db.query(sqlquery, [recipeId], (err, result) => {
+            if(err) {
+                // Returning error message if deletion was unsuccessful
+                return console.error(err.message);
+            }
+            else {
+                // Sending message to alert user that the recipe has been deleted
+                res.send('Successfully deleted recipe! Please return to the home page <a href='+'./'+'>Home</a>.')
+            }
+        })
+    })
+
+
+    // Search page
+    app.get('/search', function(req, res) {
+        res.render('search.ejs', recipeData);
+    });
+    // Route that will handle the results of the search query
+    app.get('/search-result', function(req, res) {
+        // defining the keyword variable and sanitizing it
+        const keyword = req.sanitize(req.query.keyword);
+        // querying the database to retrieve the data based on the keyword
+        // using ? as a placeholder to prevent SQL Injection
+        let sqlquery = "SELECT * FROM WHERE recipe_name LIKE ?";
+
+        db.query(sqlquery, [`%${keyword}%`], (err, result) => {
+            if(err) {
+                res.redirect('./');
+            }
+            else {
+                let newData = Object.assign({}, recipeData, {availableRecipes:result});
+                console.log(newData);
+                res.render('list_recipes.ejs', newData);
+            }
+        });
+    });
+    
 }

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<head>
+    <title> Welcome to <%= recipeSharingName %> </title>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+    <h1>Search for Recipes on <%= recipeSharingName %></h1>
+    <!-- Get form that will retrieve recipe information from the database -->
+    <!-- This is based on the user's input (the keyword) -->
+    <form method="get" action="/search-result">
+        <p>Please enter what recipe you want: </p>
+        <input id="search" type="text" name="keyword" placeholder="eg. BBQ Chicken">
+        <input type="submit" value="Search">
+    </form>
+</body>
+<footer>
+    <!-- adding a back button to allow users to navigate back to the previous page if they wish -->
+    <div class="back_button">
+        <a href="javascript:history.back()">
+            <img src="assets\back_button.png" alt="Back Button">
+        </a>
+    </div>
+</footer>
+</html>

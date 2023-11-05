@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<head>
+    <title> Welcome to <%= recipeSharingName %> </title>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+    <h1><%= recipeSharingName %></h1>
+    <h1> Recipes </h1>
+    <!-- Creating a table that the recipe information will be displayed to users -->
+    <table class="listing_recipe">
+        <!-- Creating the table head that will store the column headers -->
+        <thead>
+            <tr>
+                <!-- Column headers that will be displayed -->
+                <th>Recipe Name</th>
+                <th>Cuisine</th>
+                <th>Description of recipe</th>
+                <th>Ingredients</th>
+                <th>Recipe Method</th>
+                <th>Delete Recipe</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Creating a for loop that will read into the recipes table -->
+            <!-- Each field will be displayed in each column under their respective column headers -->
+            <% availableRecipes.forEach(function(recipe) { %>
+                <tr>
+                    <td><%= recipe.recipe_name %></td>
+                    <td><%= recipe.cuisine %></td>
+                    <td><%= recipe.recipe_description %></td>
+                    <td><%= recipe.ingredients %></td>
+                    <td><%= recipe.recipe_method %></td>
+                    <td>
+                        <form action="/deleterecipe/<%= recipe.recipe_id %>" method="post">
+                            <!-- <input type="hidden" name="deletePost" value="/delete/<%= recipe.recipe_id %>"> -->
+                            <input type="submit" value="Delete Recipe">Delete Recipe</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    <br>
+    <!-- window.location.href adapted from https://www.w3schools.com/howto/howto_js_redirect_webpage.asp -->
+    <!-- Adding a button here so the user can add the recipe if they wish after viewing the list of recipes available on the page -->
+    <button type="button" onclick="window.location.href = 'add_recipe'">Add Recipe</button>
+</body>
+<footer>
+    <!-- adding a back button to allow users to navigate back to the previous page if they wish -->
+    <div class="back_button">
+        <a href="javascript:history.back()">
+            <img src="assets\back_button.png" alt="Back Button">
+        </a>
+    </div>
+</footer>
+</html>

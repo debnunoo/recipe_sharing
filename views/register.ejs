@@ -10,20 +10,28 @@
     <!-- users will be redirected a 'registered' page when finished signing up -->
     <form method="post" action="/registered">
         <!-- form fields needed -->
-        <label>First name: <input id = "first" type="text" name="first" value="eg. James" /></label>
+        <label>First name: <input id = "first" type="text" name="first" placeholder="eg. James" /></label>
         <br>
-        <label>Surname: <input id = "last" type="text" name="last" value="eg. Bond" /></label>
+        <label>Surname: <input id = "last" type="text" name="last" placeholder="eg. Bond" /></label>
         <br>
-        <label>Email: <input id = "email" type="email" name="email" value="eg. jbond@email.com" required="@" /></label>
+        <label>Email: <input id = "email" type="email" name="email" placeholder="eg. jbond@email.com" required="@" /></label>
         <br>
-        <label>Username: <input id = "user" type="text" name="user" value="jbond" /></label>
+        <label>Username: <input id = "user" type="text" name="user" placeholder="jbond" /></label>
         <br>
-        <label>Password: <input id = "password" type="password" name="password" value="password" min="8" max="15"/></label>
+        <label>Password: <input id = "password" type="password" name="password" placeholder="password" min="8" max="15"/></label>
         <br>
-        <label>Re-type Password: <input id = "retype_password" type="password" name="retype_password" value="password" min="8" max="15"/></label>
+        <label>Re-type Password: <input id = "retype_password" type="password" name="retype_password" placeholder="password" min="8" max="15"/></label>
         <br>
         <!-- button that users will press to redirect to the 'registered' page -->
         <input type="submit" value="Register"/>
     </form>
 </body>
+<footer>
+    <!-- adding a back button to allow users to navigate back to the previous page if they wish -->
+    <div class="back_button">
+        <a href="javascript:history.back()">
+            <img src="assets\back_button.png" alt="Back Button">
+        </a>
+    </div>
+</footer>
 </html>
