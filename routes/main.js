@@ -195,8 +195,33 @@ module.exports = function(app, recipeData) {
                 console.log('error:', error);
             }
             else {
+                // Turning the api information 
                 var output = JSON.parse(body);
-                res.send(output);
+                // Formatting the output of the recipes into a more readable format
+                let format_msg = function(output) {
+                    // Adding line breaks in between to make the writing more readable
+                    var msg = `Recipe Name: ${output.title} <br>
+                    Ingredients: ${output.ingredients} <br>
+                    Instructions: ${output.instructions} <br>
+                    Servings of the Recipe = ${output.servings}`;
+                    
+                    // Returning the message
+                    return msg;
+                }
+                // Filtering the recipes to ensure only the user input is returned
+                // Saw that more than one recipe was returning
+                var requested_recipe = output.filter(recipe => recipe.title == query)
+                // Conditional statement if the array of recipes includes more than 1 recipe
+                if(requested_recipe.length > 1) {
+                    // Getting the recipe from the array
+                    var output_msg = requested_recipe[0];
+                    // Sending the recipe in the formatted output
+                    res.send(format_msg(output_msg));
+                }
+                else {
+                    // Message sent back if the recipe is not included within the API
+                    res.send('Recipe Not Found. Please try again');
+                }
             }
           });
     });

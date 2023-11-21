@@ -1,4 +1,8 @@
 // Importing the modules that will be used within the application
+// Requiring the Dotenv module here in order to store configuration details for the database
+// Setting the path to the file name of that holds the credentials
+// adapted from https://www.geeksforgeeks.org/where-should-secret-keys-should-be-stored-for-a-node-js-app/
+require('dotenv').config({ path: 'db_credentials.env' });
 var express = require('express');
 var ejs = require('ejs');
 var bodyParser = require('body-parser');
@@ -6,9 +10,6 @@ var mysql = require('mysql');
 var session = require('express-session');
 var validator = require('express-validator');
 var sanitizer = require('express-sanitizer');
-
-
-
 
 // Creating the express application object
 const app = express()
@@ -29,10 +30,11 @@ app.use(express.static(__dirname + '/css'));
 
 
 // Creating and defining database connection to MySQL
+// process.env.DB_PASSWORD points to the database password
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'recipeuser',
-    password: 'admin_recipe',
+    password: process.env.DB_PASSWORD,
     database: 'recipe_sharing'
 });
 
