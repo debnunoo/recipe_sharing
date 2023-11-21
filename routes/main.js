@@ -1,8 +1,13 @@
 // Handling the different routes within the application
 module.exports = function(app, recipeData) {
 
-       // all routes within main.js would be able to access this
-       const redirectLogin = (req, res, next) => {
+        // requiring request here so routes have access it
+        // allowing for HTTP requests to be made to an API and returning the result
+        const request = require('request');
+        // adding here in order to access the apiKey within the config.js file
+        const config = require('./config.js');
+        // all routes within main.js would be able to access this
+        const redirectLogin = (req, res, next) => {
         // checking to see if the a session has been created for the user
         if (!req.session.userId ) {
             // if not, redirecting to the login page
@@ -170,6 +175,33 @@ module.exports = function(app, recipeData) {
 
         });
     });
+    app.get('/external-recipes-form', function(req, res) {
+        res.render('external_recipes.ejs', recipeData);
+    })
+
+    // https://api-ninjas.com/api/recipe
+    // Implementing the Web API
+    app.get('/external-recipes', function(req, res) {
+        
+        var query = req.query.input;
+
+        request.get({
+            url: `https://api.api-ninjas.com/v1/recipe?query=${query}`,
+            headers: {
+              'X-Api-Key': config.apiKey
+            },
+          }, function(error, response, body) {
+            if(error) {
+                console.log('error:', error);
+            }
+            else {
+                var output = JSON.parse(body);
+                res.send(output);
+            }
+          });
+    });
+    
+
     // Adding a Recipe page
     app.get('/add_recipe', redirectLogin, function(req, res) {
         res.render('add_recipe.ejs', recipeData);
