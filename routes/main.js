@@ -278,12 +278,12 @@ module.exports = function(app, recipeData) {
     // Route that will handle the results of the search query
     app.get('/search-result', function(req, res) {
         // defining the keyword variable and sanitizing it
-        const keyword = req.sanitize(req.query.keyword);
+        // const keyword = req.sanitize(req.query.keyword);
         // querying the database to retrieve the data based on the keyword
         // using ? as a placeholder to prevent SQL Injection
-        let sqlquery = "SELECT * FROM WHERE recipe_name LIKE ?";
+        let sqlquery = "SELECT * FROM recipes WHERE recipe_name LIKE '%" + req.sanitize(req.query.keyword) + "%'";
 
-        db.query(sqlquery, [`%${keyword}%`], (err, result) => {
+        db.query(sqlquery, (err, result) => {
             if(err) {
                 res.redirect('./');
             }
@@ -294,5 +294,21 @@ module.exports = function(app, recipeData) {
             }
         });
     });
+
+    // Providing an API to allow other applications to access the recipe data
+    app.get('/api', function(req, res) {
+                // Query database to get all the books
+                let sqlquery = "SELECT * FROM recipes"; 
+
+                // Execute the sql query
+                db.query(sqlquery, (err, result) => {
+                    if (err) {
+                        res.redirect('./');
+                    }
+                    // Return results as a JSON object
+                    res.json(result); 
+                });
+        
+    })
     
 }

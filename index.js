@@ -28,6 +28,7 @@ app.use(session({
 // Setting up the path to read into the css file
 app.use(express.static(__dirname + '/css'));
 
+app.use(express.static(__dirname + '/assets'));
 
 // Creating and defining database connection to MySQL
 // process.env.DB_PASSWORD points to the database password
