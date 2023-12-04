@@ -36,3 +36,24 @@ CREATE TABLE recipes (
     recipe_method LONGTEXT NOT NULL,
     primary key(recipe_id)
 );
+
+# Creating table to store users reviews on recipes
+# Adding a Check Constraint to the rating column
+CREATE TABLE reviews (
+review_id INT NOT NULL auto_increment UNIQUE,
+user_id INT,
+review_content MEDIUMTEXT,
+rating INT,
+primary key(review_id),
+foreign key(user_id) references users(user_id),
+CHECK (rating >= 1 and rating <= 5)
+);
+
+# Creating table to enable join users to enter multiple reviews
+CREATE TABLE recipe_reviews (
+user_id INT,
+review_id INT,
+foreign key(user_id) references users(user_id),
+foreign key(review_id) references reviews(review_id)
+);
+

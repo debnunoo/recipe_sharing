@@ -28,6 +28,7 @@ app.use(session({
 // Setting up the path to read into the css file
 app.use(express.static(__dirname + '/css'));
 
+// Setting up the path to read into the assets file
 app.use(express.static(__dirname + '/assets'));
 
 // Creating and defining database connection to MySQL

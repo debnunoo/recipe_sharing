@@ -208,15 +208,23 @@ module.exports = function(app, recipeData) {
                     // Returning the message
                     return msg;
                 }
-                // Filtering the recipes to ensure only the user input is returned
-                // Saw that more than one recipe was returning
-                var requested_recipe = output.filter(recipe => recipe.title == query)
-                // Conditional statement if the array of recipes includes more than 1 recipe
-                if(requested_recipe.length > 1) {
-                    // Getting the recipe from the array
-                    var output_msg = requested_recipe[0];
-                    // Sending the recipe in the formatted output
-                    res.send(format_msg(output_msg));
+                // Initialising empty variable
+                var requested_recipe; 
+                // For loop to loop through the array of recipes
+                for (let i = 0; i < output.length; i++) {
+                    // checking to see if the query entered matches a title within the array
+                    if(output[i].title == query) {
+                        // if it does, storing the recipe (from the array) in the empty variable
+                        requested_recipe = output[i];
+                        // breaking the loop if recipe has been found
+                        break;
+                    }
+                }
+                // Conditional statement to check variable contains a recipe
+                if(requested_recipe) {
+                    // Returning the found recipe (from the for loop above)
+                    //  and sending the recipe in the formatted output (set above)
+                    res.send(format_msg(requested_recipe));
                 }
                 else {
                     // Message sent back if the recipe is not included within the API
@@ -251,9 +259,10 @@ module.exports = function(app, recipeData) {
         });
     });
     // Route that will handle a recipe being deleted
-    app.post('/deleterecipe/:recipeId', redirectLogin, function(req, res) {
+    app.post('/delete/:recipeId', redirectLogin, function(req, res) {
         // accessing the recipe_id parameter
-        const recipeId = req.params.recipeId;
+        const recipeId = req.params.recipe_id || req.body.recipe_id;
+        
         // Deleting all recipe information when the recipe matches the id (the unique identifier)
         let sqlquery = `DELETE FROM recipes
                         WHERE recipe_id = ?`
@@ -288,13 +297,19 @@ module.exports = function(app, recipeData) {
                 res.redirect('./');
             }
             else {
-                let newData = Object.assign({}, recipeData, {availableRecipes:result});
-                console.log(newData);
+                if(result) {
+                    let newData = Object.assign({}, recipeData, {availableRecipes:result});
+                    console.log(newData);
+                }
+                else {
+                    non_existent_recipe = "Recipe name not found. Please try again!"
+                    res.send(non_existent_recipe);
+                }
                 res.render('list_recipes.ejs', newData);
-            }
+            } 
+            
         });
-    });
-
+    });      
     // Providing an API to allow other applications to access the recipe data
     app.get('/api', function(req, res) {
                 // Query database to get all the books
