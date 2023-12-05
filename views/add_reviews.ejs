@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<head>
+    <title> Welcome to <%= recipeSharingName %> </title>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<header>
+    <img src="/logo.png" alt="Website logo">
+</header>
+<body>
+    <h1> Add a Review </h1>
+    <!-- creating a post form so that the users details are stored within the database -->
+    <!-- users will be redirected a 'registered' page when finished signing up -->
+    <form method="post" action="/reviewadded">
+        <!-- form fields needed -->
+        <label>Title of Review: <input id = "title" type="text" name="title" placeholder="eg. Succulent BBQ Chicken" /></label>
+        <br>
+        <label>Describe Food: <input id = "content" type="text" name="content" placeholder="eg. Portuguese" /></label>
+        <br>
+        <!-- specifying minimum and maximum that users can input  -->
+        <label>Rate Food: <input id = "rating" type="number" name="rating" placeholder="eg. 3" min="1" max="5"/></label>
+        <br>
+        <!-- button that users will press to redirect to the 'reviewadded' page -->
+        <input type="submit" value="Add Review"/>
+    </form>
+</body>
+<footer>
+    <!-- adding a back button to allow users to navigate back to the previous page if they wish -->
+    <div class="back_button">
+        <a href="javascript:history.back()">
+            <img src="/back_button.png" alt="Back Button">
+        </a>
+    </div>
+</footer>
+</html>

@@ -112,7 +112,7 @@ module.exports = function(app, recipeData) {
             res.send(errMessage);
         }
         else {
-            let sqlquery = `SELECT username, hashedPassword
+            let sqlquery = `SELECT user_id, username, hashedPassword
                             FROM users
                             WHERE username = ?`
             
@@ -123,7 +123,10 @@ module.exports = function(app, recipeData) {
                 else {
                     console.log(result);
 
+                    // Retrieving the hashed password from the query
                     hashedPassword = result[0].hashedPassword;
+                    //  Retrieving the user_id from query
+                    userId = result[0].user_id;
                     console.log(hashedPassword)
 
                     bcrypt.compare(req.body.password, hashedPassword, function(err, result) {
@@ -133,7 +136,8 @@ module.exports = function(app, recipeData) {
                         else if(result == true) {
                             console.log('Login Sucessful!');
                             // Saving user session here, when login is successful
-                            req.session.userId = req.body.user;
+                            // Using the user_id as the req.session to enable reviews to be saved later
+                            req.session.userId = userId;
                             res.redirect('/');
                         }
                         else {
@@ -279,6 +283,36 @@ module.exports = function(app, recipeData) {
         })
     })
 
+    // Adding a Food Review page
+    app.get('/add_review', redirectLogin, function(req, res) {
+        res.render('add_reviews.ejs', recipeData);
+    });    
+
+    // Route that will handle and process reviews being added to the review table
+    app.post('/reviewadded', redirectLogin, function(req, res) {
+
+        // Retrieving the userId from the req.session in order to input the user_id into the reviews table
+        const user_id = req.session.userId;
+
+        // saving the review data into the database
+        let sqlquery = `INSERT INTO 
+                        reviews(user_id, review_title, review_content, rating)
+                        VALUES(?, ?, ?, ?)`
+        
+        // Getting the user_id from above so that it can be added to the review tables
+        // Selecting and sanitizing the fields that will be added into the review database
+        let newrecord = [user_id, req.sanitize(req.body.title), req.sanitize(req.body.content), req.sanitize(req.body.rating)]
+
+        db.query(sqlquery, newrecord, (err, result) => {
+            if(err) {
+                return console.error(err.message);
+            }
+            else {
+                // Message that will be sent to confirm recipe has successfully added
+                res.send('Review has been successfully added! View it here: <a href="/list_recipes"> View Recipes </a> or return to the home page <a href='+'./'+'>Home</a>.');
+            }
+        });
+    });
 
     // Search page
     app.get('/search', function(req, res) {
