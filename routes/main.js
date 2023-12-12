@@ -163,9 +163,8 @@ module.exports = function(app, recipeData) {
     });
     // Listing the recipes
     app.get('/list_recipes', redirectLogin, function(req, res) {
-        let sqlquery = `SELECT recipe_name, cuisine, recipe_description, ingredients, recipe_method
-                        FROM recipes
-                        GROUP BY recipe_name, cuisine, recipe_description, ingredients, recipe_method`
+        let sqlquery = `SELECT recipe_id, recipe_name, cuisine, recipe_description, ingredients, recipe_method
+                        FROM recipes`
 
         db.query(sqlquery, (err, result) => {
             if(err) {
@@ -207,7 +206,8 @@ module.exports = function(app, recipeData) {
                     var msg = `Recipe Name: ${output.title} <br>
                     Ingredients: ${output.ingredients} <br>
                     Instructions: ${output.instructions} <br>
-                    Servings of the Recipe = ${output.servings}`;
+                    Servings of the Recipe = ${output.servings} <br>
+                    <a href="javascript:history.back()"> Go back </a> or <a href="/"> Home </a>`
                     
                     // Returning the message
                     return msg;
@@ -265,7 +265,7 @@ module.exports = function(app, recipeData) {
     // Route that will handle a recipe being deleted
     app.post('/delete/:recipeId', redirectLogin, function(req, res) {
         // accessing the recipe_id parameter
-        const recipeId = req.params.recipe_id || req.body.recipe_id;
+        const recipeId = req.params.recipeId;
         
         // Deleting all recipe information when the recipe matches the id (the unique identifier)
         let sqlquery = `DELETE FROM recipes
@@ -321,12 +321,13 @@ module.exports = function(app, recipeData) {
     // Route that will handle the results of the search query
     app.get('/search-result', function(req, res) {
         // defining the keyword variable and sanitizing it
-        // const keyword = req.sanitize(req.query.keyword);
+        const keyword = req.sanitize(req.query.keyword);
+
         // querying the database to retrieve the data based on the keyword
         // using ? as a placeholder to prevent SQL Injection
-        let sqlquery = "SELECT * FROM recipes WHERE recipe_name LIKE '%" + req.sanitize(req.query.keyword) + "%'";
+        let sqlquery = "SELECT * FROM recipes WHERE recipe_name LIKE ?";
 
-        db.query(sqlquery, (err, result) => {
+        db.query(sqlquery, keyword, (err, result) => {
             if(err) {
                 res.redirect('./');
             }
@@ -334,12 +335,11 @@ module.exports = function(app, recipeData) {
                 if(result) {
                     let newData = Object.assign({}, recipeData, {availableRecipes:result});
                     console.log(newData);
+                    res.render('list_recipes.ejs', newData);
                 }
                 else {
-                    non_existent_recipe = "Recipe name not found. Please try again!"
-                    res.send(non_existent_recipe);
+                    res.send('Recipe name not found. Please try again!');
                 }
-                res.render('list_recipes.ejs', newData);
             } 
             
         });

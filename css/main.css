@@ -1,0 +1,94 @@
+/* setting background colour for web application */
+body {
+    /* off white */
+    background-color: #FAF9F6;
+}
+
+/* formatting the logo */
+header img {
+    width: 40%;
+    margin-left: 400px;
+    margin-right: 150px;
+}
+
+/* formatting the 'Register' and 'Login' tags */
+header a {
+    margin-left: 800px;
+    display: inline-block;
+    text-decoration: underline;
+    /* float: left; */
+}
+
+/* setting position of the back button image */
+.back_button {
+    padding-top: 200px;
+    /* position: sticky; */
+}
+
+.back_button:scroll
+
+/* removing background colour when hovering over back button image,
+so setting it to the original background colour */
+[href="javascript:history.back()"]:hover {
+    background-color: #FAF9F6;
+}
+
+/* formatting the web links to a more suitable and readable style */
+a {
+    color: black;
+    font-size: 20px;
+    /* removing the automatic underline */
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* differentiating the web links when cursor hovers to help users */
+a:hover {
+    color: blue;
+    background-color: orange;
+}
+
+/* differentiating the links for 'Register' and 'Login' when cursor hovers to help users */
+[href="register"]:hover, [href="login"]:hover {
+    color: blue;
+    background-color: #FAF9F6;
+}
+
+/* differentiating the link for 'Logout' when cursor hovers to help users,
+makes it more clear */
+[href="logout"]:hover {
+    color: red;
+    font-size: 30px;
+    background-color: #FAF9F6;
+}
+
+/* Formatting and styling all forms to */
+form {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: medium;
+    margin-bottom: 50px;
+    margin-top: 50px;
+    /* display:inline-block; */
+}
+
+/* Styling all h1 tags to help make users aware of page headers */
+h1 {
+    text-align: center;
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 40px;
+}
+
+/* table {
+    border-collapse: collapse;
+    border: 1px solid black;
+} */
+
+table, tr, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    border-spacing: 100px;
+
+}
+

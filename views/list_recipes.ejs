@@ -31,7 +31,7 @@
                     <td><%= recipe.recipe_method %></td>
                     <td>
                         <form action="/delete/<%= recipe.recipe_id %>" method="post">
-                            <input type="hidden" name="recipe_id" value="/delete/<%= recipe.recipe_id %>">
+                            <input type="hidden" name="recipe_id">
                             <button type="submit" onclick="return confirm('Are you sure you want to delete this recipe')">Delete post</button>
                         </form>
                     </td>
@@ -47,7 +47,7 @@
     <!-- adding a back button to allow users to navigate back to the previous page if they wish -->
     <div class="back_button">
         <a href="javascript:history.back()">
-            <img src="/back_button.png" alt="Back Button">
+            <img src="/back_button.png" alt="Back Button" width="30px" height="30px">
         </a>
     </div>
 </footer>

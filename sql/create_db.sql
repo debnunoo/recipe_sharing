@@ -50,10 +50,9 @@ CHECK (rating >= 1 and rating <= 5)
 );
 
 # Creating table to enable join users to enter multiple reviews
-CREATE TABLE recipe_reviews (
+CREATE TABLE user_reviews (
 user_id INT,
 review_id INT,
 foreign key(user_id) references users(user_id),
 foreign key(review_id) references reviews(review_id)
 );
-
