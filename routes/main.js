@@ -131,7 +131,7 @@ module.exports = function(app, recipeData) {
 
                     bcrypt.compare(req.body.password, hashedPassword, function(err, result) {
                         if(err) {
-                            res.send('Sorry, your password seems to be incorrect. Please try again');
+                            res.send('Sorry, your password seems to be incorrect. Please try again. <a href="/login"> Click here </a>');
                         }
                         else if(result == true) {
                             console.log('Login Sucessful!');
@@ -141,7 +141,7 @@ module.exports = function(app, recipeData) {
                             res.redirect('/');
                         }
                         else {
-                            res.send('Please try again!');
+                            res.send('Please try again! <a href="/login"> Click here </a>');
                         }
                     });
 
@@ -283,9 +283,39 @@ module.exports = function(app, recipeData) {
         })
     })
 
+    app.get('/reviews', redirectLogin, function(req, res) {
+        let sqlquery = "SELECT * FROM existing_reviews"
+
+        db.query(sqlquery, (err, result) => {
+            if(err) {
+                res.redirect('./');
+            }
+            else {
+                let newData = Object.assign({}, recipeData, {availableReviews:result});
+                console.log(newData);
+                res.render('list_reviews.ejs', newData);
+            }
+
+        });
+    })
+
     // Adding a Food Review page
     app.get('/add_review', redirectLogin, function(req, res) {
-        res.render('add_reviews.ejs', recipeData);
+        // getting the recipe_name in order to display within the dropdown menus
+        let sqlquery = `SELECT recipe_name
+                        FROM recipes`
+
+        db.query(sqlquery, (err, result) => {
+            if(err) {
+                res.redirect('./');
+            }
+            else {
+                let newData = Object.assign({}, recipeData, {availableRecipes:result});
+                console.log(newData);
+                res.render('add_reviews.ejs', newData);
+            }
+
+        });
     });    
 
     // Route that will handle and process reviews being added to the review table
@@ -293,15 +323,17 @@ module.exports = function(app, recipeData) {
 
         // Retrieving the userId from the req.session in order to input the user_id into the reviews table
         const user_id = req.session.userId;
+        // Retrieving the selected recipe name from the dropdown options
+        const reviewed_recipe = req.body.existing_recipes;
 
         // saving the review data into the database
         let sqlquery = `INSERT INTO 
-                        reviews(user_id, review_title, review_content, rating)
-                        VALUES(?, ?, ?, ?)`
+                        reviews(user_id, review_title, review_content, rating, recipe_id)
+                        VALUES(?, ?, ?, ?, (SELECT recipe_id FROM recipes WHERE recipe_name = ?))`
         
         // Getting the user_id from above so that it can be added to the review tables
         // Selecting and sanitizing the fields that will be added into the review database
-        let newrecord = [user_id, req.sanitize(req.body.title), req.sanitize(req.body.content), req.sanitize(req.body.rating)]
+        let newrecord = [user_id, req.sanitize(req.body.title), req.sanitize(req.body.content), req.sanitize(req.body.rating), reviewed_recipe]
 
         db.query(sqlquery, newrecord, (err, result) => {
             if(err) {
@@ -309,7 +341,7 @@ module.exports = function(app, recipeData) {
             }
             else {
                 // Message that will be sent to confirm recipe has successfully added
-                res.send('Review has been successfully added! View it here: <a href="/list_recipes"> View Recipes </a> or return to the home page <a href='+'./'+'>Home</a>.');
+                res.send('Review has been successfully added! View it here: <a href="/reviews"> View Reviews </a> or return to the home page <a href='+'./'+'>Home</a>.');
             }
         });
     });

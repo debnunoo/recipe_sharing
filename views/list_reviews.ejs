@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<head>
+    <title> Welcome to <%= recipeSharingName %> </title>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<header>
+    <img src="/logo.png" alt="Website logo">
+</header>
+<body>
+    <h1> Reviews </h1>
+    <!-- Creating a table that the recipe information will be displayed to users -->
+    <table class="listing_review">
+        <!-- Creating the table head that will store the column headers -->
+        <tr>
+            <!-- Column headers that will be displayed -->
+            <th>Title of Review</th>
+            <th>User</th>
+            <th>Related Recipe</th>
+            <th>Description of food</th>
+            <th>Rating</th>
+        </tr>
+            <!-- rows beneath the column headers -->
+            <!-- Creating a for loop that will read into the recipes table -->
+            <!-- Each field will be displayed in each column under their respective column headers -->
+            <% availableReviews.forEach(function(review) { %>
+                <tr>
+                    <td><%= review.review_title %></td>
+                    <td><%= review.username %></td>
+                    <td><%= review.recipe_name %></td>
+                    <td><%= review.review_content %></td>
+                    <td><%= review.rating %></td>
+                </tr>
+            <% }) %>
+    </table>
+    <br>
+    <!-- window.location.href adapted from https://www.w3schools.com/howto/howto_js_redirect_webpage.asp -->
+    <!-- Adding a button here so the user can add the recipe if they wish after viewing the list of recipes available on the page -->
+    <button type="button" onclick="window.location.href = 'add_review'">Add Review</button>
+</body>
+<footer>
+    <!-- adding a back button to allow users to navigate back to the previous page if they wish -->
+    <div class="back_button">
+        <a href="javascript:history.back()">
+            <img src="/back_button.png" alt="Back Button" width="30px" height="30px">
+        </a>
+    </div>
+</footer>
+</html>

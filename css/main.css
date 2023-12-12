@@ -25,8 +25,6 @@ header a {
     /* position: sticky; */
 }
 
-.back_button:scroll
-
 /* removing background colour when hovering over back button image,
 so setting it to the original background colour */
 [href="javascript:history.back()"]:hover {
