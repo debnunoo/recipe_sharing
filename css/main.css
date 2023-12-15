@@ -11,12 +11,15 @@ header img {
     margin-right: 150px;
 }
 
-/* formatting the 'Register' and 'Login' tags */
-header a {
-    margin-left: 800px;
-    display: inline-block;
-    text-decoration: underline;
-    /* float: left; */
+ /* formatting the 'Register' and 'Login' tags */
+/* Register */
+#register {
+    margin-left: 550px;
+    float: left;
+}
+/* Login */
+#login {
+    margin-left: 650px;
 }
 
 /* setting position of the back button image */
@@ -50,6 +53,7 @@ a:hover {
 [href="register"]:hover, [href="login"]:hover {
     color: blue;
     background-color: #FAF9F6;
+    text-decoration: underline;
 }
 
 /* differentiating the link for 'Logout' when cursor hovers to help users,
@@ -86,7 +90,47 @@ h1 {
 table, tr, td {
     border: 1px solid black;
     border-collapse: collapse;
-    border-spacing: 100px;
+    border-spacing: 90px;
 
 }
+.listing_review {
+    margin-left: auto;
+    margin-right: auto;
+}
 
+.add_review {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#about-us {
+    font-size: 20px;
+    font-family: cursive;
+    text-indent: 10px;
+}
+
+td {
+    font-family: cursive;
+    font-size: 12px;
+    text-align: start;
+}
+
+tr {
+    text-align: center;
+}
+
+input[type=submit] {
+    background: transparent;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 5px 10px;
+    margin-top: 20px;
+    border-color: beige;
+    border-style: solid;
+}
+
+input[type=submit]:hover {
+    background-color: cadetblue;
+    cursor: pointer;
+}

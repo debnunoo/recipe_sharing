@@ -42,7 +42,7 @@ module.exports = function(app, recipeData) {
         /* readjusted from https://express-validator.github.io/docs/6.13.0/custom-error-messages/ */
         check('retype_password').notEmpty().withMessage('Please re-enter your password').trim().custom((value,{req}) =>{
             if(value !== req.body.password) {
-                throw new Error('Passwords do not match. Please try again!')
+                throw new Error('Passwords do not match. Please try again!');
             }
             else {
                 return true;
@@ -54,13 +54,9 @@ module.exports = function(app, recipeData) {
     app.post('/registered', signupValidation, function(req, res) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            /*if(errors.array().includes('Passwords do not match')) {
-                res.send('<script>alert{"Passwords do not match. Please try again!};</script>');
-            } */
 
-            //const errMessage = 'Password was too short. <a href="/register"> Please try again </a>';
-            
-            console.error('Failed')
+            console.error('Failed');
+            res.send('Passwords do not match. <a href="/register"> Please try again! </a>');
         }
 
         else {
@@ -83,10 +79,16 @@ module.exports = function(app, recipeData) {
                     }
                     else {
                         console.log('Succesful!')
-                        const success_message = 'Hello ' + req.body.first + ' ' + req.body.last + ' you are now registered! We will send an email to you at ' 
-                            + req.body.email + '.Your password is: ' + req.body.password + ' and your hashed password is: ' + hashedPassword;
-                            console.log(success_message);
-                        
+                        const success_message = function(message) {
+                            var message = `First name: ${req.body.first}
+                            Last name: ${req.body.last}
+                            Email: ${req.body.email}
+                            Password: ${req.body.password}
+                            Hashed Password: ${hashedPassword}`;
+
+                            return message;
+                        }
+        
                         console.log(success_message);
 
                         res.redirect(301, '/');
@@ -232,7 +234,7 @@ module.exports = function(app, recipeData) {
                 }
                 else {
                     // Message sent back if the recipe is not included within the API
-                    res.send('Recipe Not Found. Please try again');
+                    res.send('Recipe Not Found. <a href="external-recipes-form"> Please try again </a>');
                 }
             }
           });
@@ -268,7 +270,7 @@ module.exports = function(app, recipeData) {
         const recipeId = req.params.recipeId;
         
         // Deleting all recipe information when the recipe matches the id (the unique identifier)
-        let sqlquery = `DELETE FROM recipes
+        let sqlquery = `DELETE FROM recipes 
                         WHERE recipe_id = ?`
 
         db.query(sqlquery, [recipeId], (err, result) => {
@@ -277,8 +279,8 @@ module.exports = function(app, recipeData) {
                 return console.error(err.message);
             }
             else {
-                // Sending message to alert user that the recipe has been deleted
-                res.send('Successfully deleted recipe! Please return to the home page <a href='+'./'+'>Home</a>.')
+                // Redirecting back to the list_recipes page after deletion has occurred
+                res.redirect('/list_recipes')
             }
         })
     })
@@ -357,23 +359,17 @@ module.exports = function(app, recipeData) {
 
         // querying the database to retrieve the data based on the keyword
         // using ? as a placeholder to prevent SQL Injection
-        let sqlquery = "SELECT * FROM recipes WHERE recipe_name LIKE ?";
+        let sqlquery = "SELECT * FROM recipes WHERE recipe_name LIKE %?%";
 
         db.query(sqlquery, keyword, (err, result) => {
             if(err) {
-                res.redirect('./');
+                res.send('Recipe name not found. <a href="/search"> Please try again! </a>')
             }
             else {
-                if(result) {
-                    let newData = Object.assign({}, recipeData, {availableRecipes:result});
-                    console.log(newData);
-                    res.render('list_recipes.ejs', newData);
-                }
-                else {
-                    res.send('Recipe name not found. Please try again!');
-                }
-            } 
-            
+                let newData = Object.assign({}, recipeData, {availableRecipes:result});
+                console.log(newData);
+                res.render('list_recipes.ejs', newData);
+            }
         });
     });      
     // Providing an API to allow other applications to access the recipe data
