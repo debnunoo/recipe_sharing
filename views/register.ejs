@@ -4,7 +4,12 @@
     <link rel="stylesheet" type="text/css" href="/main.css" />
 </head>
 <header>
-    <img src="/logo.png" alt="Website logo">
+    <!-- Making the logo clickable and redirecting to homepage -->
+    <div>
+        <a href="./">
+            <img src="/logo.png" alt="Website logo">
+        </a>
+    </div>
 </header>
 <body>
     <h1> Register </h1>
@@ -22,6 +27,7 @@
         <br>
         <label>Password: <input id = "password" type="password" name="password" placeholder="password" min="8" max="15"/></label>
         <br>
+        <!-- Password retry to increase security -->
         <label>Re-type Password: <input id = "retype_password" type="password" name="retype_password" placeholder="password" min="8" max="15"/></label>
         <br>
         <!-- button that users will press to redirect to the 'registered' page -->
@@ -30,7 +36,7 @@
 
     <footer>
         <!-- adding a back button to allow users to navigate back to the previous page if they wish -->
-        <div class="back_button">
+        <div class="back-button">
             <a href="javascript:history.back()">
                 <img src="/back_button.png" alt="Back Button" width="30px" height="30px">
             </a>

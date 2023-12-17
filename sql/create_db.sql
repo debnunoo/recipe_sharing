@@ -49,5 +49,3 @@ foreign key(user_id) references users(user_id),
 CHECK (rating >= 1 and rating <= 5)
 );
 
-# dropping table as it is not needed
-#drop table user_reviews;

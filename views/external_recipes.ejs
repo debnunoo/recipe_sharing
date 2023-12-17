@@ -5,17 +5,24 @@
         <link rel="stylesheet"  type="text/css" href="/main.css" />
     </head>
     <header>
-        <img src="/logo.png" alt="Website logo">
+        <!-- Making the logo clickable and redirecting to homepage -->
+        <div>
+            <a href="./">
+                <img src="/logo.png" alt="Website logo">
+            </a>
+        </div>
     </header>
     <body>
+        <!-- form that will retrieve details from the web api -->
         <form method="get" action="/external-recipes">
+        <!-- search box for users to enter desired recipe -->
         <label>Search external recipes: <input id="input" type="text" name="input" placeholder="eg. Italian Wedding Soup"/></label>
         <input type="submit" value="Submit"/>
         </form>
     </body>
     <footer>
         <!-- adding a back button to allow users to navigate back to the previous page if they wish -->
-        <div class="back_button">
+        <div class="back-button">
             <a href="javascript:history.back()">
                 <img src="/back_button.png" alt="Back Button" width="30px" height="30px">
             </a>

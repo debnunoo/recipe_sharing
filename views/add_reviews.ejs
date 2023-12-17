@@ -4,12 +4,17 @@
     <link rel="stylesheet" type="text/css" href="/main.css" />
 </head>
 <header>
-    <img src="/logo.png" alt="Website logo">
+    <!-- Making the logo clickable and redirecting to homepage -->
+    <div>
+        <a href="./">
+            <img src="/logo.png" alt="Website logo">
+        </a>
+    </div>
 </header>
 <body>
     <h1> Add a Review </h1>
-    <!-- creating a post form so that the users details are stored within the database -->
-    <!-- users will be redirected a 'registered' page when finished signing up -->
+    <!-- creating a post form so that the review details are stored within the database -->
+    <!-- users will be redirected a 'reviewadded' page when finished signing up -->
     <form method="post" action="/reviewadded">
         <!-- form fields needed -->
         <label>Title of Review: <input id = "title" type="text" name="title" placeholder="eg. Succulent BBQ Chicken" /></label>
@@ -33,7 +38,7 @@
 </body>
 <footer>
     <!-- adding a back button to allow users to navigate back to the previous page if they wish -->
-    <div class="back_button">
+    <div class="back-button">
         <a href="javascript:history.back()">
             <img src="/back_button.png" alt="Back Button" width="30px" height="30px">
         </a>

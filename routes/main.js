@@ -4,8 +4,10 @@ module.exports = function(app, recipeData) {
         // requiring request here so routes have access it
         // allowing for HTTP requests to be made to an API and returning the result
         const request = require('request');
+        
         // adding here in order to access the apiKey within the config.js file
         const config = require('./config.js');
+
         // all routes within main.js would be able to access this
         const redirectLogin = (req, res, next) => {
         // checking to see if the a session has been created for the user
@@ -36,11 +38,15 @@ module.exports = function(app, recipeData) {
         res.render('register.ejs', recipeData)
     });
 
+    // Validation checks for the registration page
     var signupValidation = [
+        // Checking email is an email and is filled in
         check('email').isEmail().normalizeEmail().notEmpty(),
+        // Checking password length is between 8 and 15 and is filled in
         check('password').isLength({ min: 8, max: 15}).notEmpty().withMessage('Please enter a password!').trim(),
-        /* readjusted from https://express-validator.github.io/docs/6.13.0/custom-error-messages/ */
+        /* readjusted from (Express-Validator, n.d) */
         check('retype_password').notEmpty().withMessage('Please re-enter your password').trim().custom((value,{req}) =>{
+            // Checking to see if 're-type password' matches the 'password' field 
             if(value !== req.body.password) {
                 throw new Error('Passwords do not match. Please try again!');
             }
@@ -51,8 +57,10 @@ module.exports = function(app, recipeData) {
     ];
 
     // g.jones, princejealous21
+    // Route that handles user's registrations, including the validation above
     app.post('/registered', signupValidation, function(req, res) {
         const errors = validationResult(req);
+        // If there are errors, send message below
         if (!errors.isEmpty()) {
 
             console.error('Failed');
@@ -60,18 +68,24 @@ module.exports = function(app, recipeData) {
         }
 
         else {
+            // Retrieving the password field from the registration form
             const plainPassword = req.body.password;
+            // Number of salt rounds
             const saltRounds = 10;
 
+            // Function that hashes password and returns the hash
             const hashedPassword = bcrypt.hashSync(plainPassword, saltRounds);
 
+            // Hash function
             bcrypt.hash(plainPassword, saltRounds, function(err, hashedPassword) {
 
+                // Inserting user's details into database
                 let sqlquery = `INSERT INTO users(
                                 username, first_name, last_name, email, hashedPassword)
                                 VALUES (?, ?, ?, ?, ?)`;
                 
-                let newrecord = [req.body.user, req.body.first, req.body.last, req.body.email, hashedPassword];
+                // Sanitising form fields, except hashedPassword
+                let newrecord = [req.sanitize(req.body.user), req.sanitize(req.body.first), req.sanitize(req.body.last), req.sanitize(req.body.email), hashedPassword];
 
                 db.query(sqlquery, newrecord, (err, result) => {
                     if(err) {
@@ -79,19 +93,9 @@ module.exports = function(app, recipeData) {
                     }
                     else {
                         console.log('Succesful!')
-                        const success_message = function(message) {
-                            var message = `First name: ${req.body.first}
-                            Last name: ${req.body.last}
-                            Email: ${req.body.email}
-                            Password: ${req.body.password}
-                            Hashed Password: ${hashedPassword}`;
 
-                            return message;
-                        }
-        
-                        console.log(success_message);
-
-                        res.redirect(301, '/');
+                        // Redirect to home page if login is successful
+                        res.redirect('/');
                     }
                 });
             });
@@ -104,21 +108,28 @@ module.exports = function(app, recipeData) {
         res.render('login.ejs', recipeData)
     });
 
-    loginValidation = [check('user').notEmpty(), check('password').notEmpty().trim()]
+    // Validation checks for the login page
+    // Checking both fields are filled in
+    var loginValidation = [check('user').notEmpty(), check('password').notEmpty().trim()]
 
+    // Route that handles user's login, including the validation above
     app.post('/loggedin', loginValidation, function(req, res) {
         const errors = validationResult(req);
-        // if invalid email is inputted, user is redirected to the register page
+        // if inputted fields are invalid, user is sent error message
         if (!errors.isEmpty()) {
             const errMessage = 'Please enter the correct details. <a href="/login"> Please try again </a>';
             res.send(errMessage);
         }
         else {
+            // Retrieving the username from the login form
+            loggedUser = req.sanitize(req.body.user)
+
+            // Otherwise sql query is run, to retrieve the username and hashedPassword based of the username
             let sqlquery = `SELECT user_id, username, hashedPassword
                             FROM users
                             WHERE username = ?`
             
-            db.query(sqlquery, req.body.user, (err, result) => {
+            db.query(sqlquery, loggedUser, (err, result) => {
                 if(err) {
                     return console.error(err.message);
                 }
@@ -131,18 +142,21 @@ module.exports = function(app, recipeData) {
                     userId = result[0].user_id;
                     console.log(hashedPassword)
 
-                    bcrypt.compare(req.body.password, hashedPassword, function(err, result) {
+                    // Comparing user's entered password with the hash stored in the database
+                    bcrypt.compare(req.sanitize(req.body.password), hashedPassword, function(err, result) {
                         if(err) {
+                            // If error, message is sent
                             res.send('Sorry, your password seems to be incorrect. Please try again. <a href="/login"> Click here </a>');
                         }
                         else if(result == true) {
                             console.log('Login Sucessful!');
                             // Saving user session here, when login is successful
-                            // Using the user_id as the req.session to enable reviews to be saved later
+                            // Using the user_id as the req.session to enable reviews to be saved later, before redirecting to homepage
                             req.session.userId = userId;
                             res.redirect('/');
                         }
                         else {
+                            // If password does not match, users are prompted to retry
                             res.send('Please try again! <a href="/login"> Click here </a>');
                         }
                     });
@@ -160,12 +174,13 @@ module.exports = function(app, recipeData) {
               return res.redirect('./');
             }
                 // sending message to user to indicate logging out has been successful
-                res.send('You are now logged out. Please return to <a href='+'./'+'>Home</a>');
+                res.send('You are now logged out. Please return to <a href= "./"> Home </a>');
             })
     });
     // Listing the recipes
     app.get('/list_recipes', redirectLogin, function(req, res) {
-        let sqlquery = `SELECT recipe_id, recipe_name, cuisine, recipe_description, ingredients, recipe_method
+        // Selecting fields from the recipe table to display within the table on the webpage
+        let sqlquery = `SELECT recipe_name, cuisine, recipe_description, ingredients, recipe_method
                         FROM recipes`
 
         db.query(sqlquery, (err, result) => {
@@ -173,26 +188,32 @@ module.exports = function(app, recipeData) {
                 res.redirect('./');
             }
             else {
+                // Looping through the data and storing within the result variable
                 let newData = Object.assign({}, recipeData, {availableRecipes:result});
                 console.log(newData);
+                // Rendering page
                 res.render('list_recipes.ejs', newData);
             }
 
         });
     });
+    // Rendering the page for users to enter word for web api
     app.get('/external-recipes-form', function(req, res) {
         res.render('external_recipes.ejs', recipeData);
     })
 
-    // https://api-ninjas.com/api/recipe
-    // Implementing the Web API
+    // Implementing the Web API (API Ninjas, n.d)
     app.get('/external-recipes', function(req, res) {
         
-        var query = req.query.input;
+        // Retrieving and sanitising user's search keyword
+        var query = req.sanitize(req.query.input);
 
+        // Getting the url and headers from the request made
         request.get({
+            // Adding the searched keyword at the end of the url
             url: `https://api.api-ninjas.com/v1/recipe?query=${query}`,
             headers: {
+                // API key - stored within config.js (which is required above)
               'X-Api-Key': config.apiKey
             },
           }, function(error, response, body) {
@@ -200,11 +221,13 @@ module.exports = function(app, recipeData) {
                 console.log('error:', error);
             }
             else {
-                // Turning the api information 
+                // Turning the api information into JSON format
                 var output = JSON.parse(body);
                 // Formatting the output of the recipes into a more readable format
                 let format_msg = function(output) {
                     // Adding line breaks in between to make the writing more readable
+                    // Getting the relevant fields to display a recipe
+                    // Adding links to go back (to search box) or to go home if finished searching
                     var msg = `Recipe Name: ${output.title} <br>
                     Ingredients: ${output.ingredients} <br>
                     Instructions: ${output.instructions} <br>
@@ -214,9 +237,9 @@ module.exports = function(app, recipeData) {
                     // Returning the message
                     return msg;
                 }
-                // Initialising empty variable
+                // Initialising an empty variable
                 var requested_recipe; 
-                // For loop to loop through the array of recipes
+                // Looping through the array of recipes
                 for (let i = 0; i < output.length; i++) {
                     // checking to see if the query entered matches a title within the array
                     if(output[i].title == query) {
@@ -251,6 +274,7 @@ module.exports = function(app, recipeData) {
         let sqlquery = `INSERT INTO 
                         recipes(recipe_name, cuisine, recipe_description, ingredients, recipe_method)
                         VALUES(?, ?, ?, ?, ?)`
+
         // Selecting and sanitizing the fields that will be added into the recipes database
         let newrecord = [req.sanitize(req.body.name), req.sanitize(req.body.cuisine), req.sanitize(req.body.description), req.sanitize(req.body.ingredients), req.sanitize(req.body.method)]
 
@@ -260,13 +284,14 @@ module.exports = function(app, recipeData) {
             }
             else {
                 // Message that will be sent to confirm recipe has successfully added
-                res.send('Recipe has been successfully added! View it here: <a href="/list_recipes"> View Recipes </a> or return to the home page <a href='+'./'+'>Home</a>.');
+                // User can either go view their added recipe (within the list_recipe page) or return home
+                res.send('Recipe has been successfully added! View it here: <a href="/list_recipes"> View Recipes </a> or return to the home page <a href= "./"> Home </a>.');
             }
         });
     });
     // Route that will handle a recipe being deleted
     app.post('/delete/:recipeId', redirectLogin, function(req, res) {
-        // accessing the recipe_id parameter
+        // accessing the recipe_id parameter from the list_recipes page
         const recipeId = req.params.recipeId;
         
         // Deleting all recipe information when the recipe matches the id (the unique identifier)
@@ -285,7 +310,9 @@ module.exports = function(app, recipeData) {
         })
     })
 
+    // Listing the reviews page
     app.get('/reviews', redirectLogin, function(req, res) {
+        // Query that selects and accesses data from the 'existing_reviews' View table
         let sqlquery = "SELECT * FROM existing_reviews"
 
         db.query(sqlquery, (err, result) => {
@@ -295,9 +322,9 @@ module.exports = function(app, recipeData) {
             else {
                 let newData = Object.assign({}, recipeData, {availableReviews:result});
                 console.log(newData);
+                // Rendering the page
                 res.render('list_reviews.ejs', newData);
             }
-
         });
     })
 
@@ -312,8 +339,10 @@ module.exports = function(app, recipeData) {
                 res.redirect('./');
             }
             else {
+                // Looping through the availableRecipes and storing it within result
                 let newData = Object.assign({}, recipeData, {availableRecipes:result});
                 console.log(newData);
+                // Rendering page
                 res.render('add_reviews.ejs', newData);
             }
 
@@ -328,12 +357,13 @@ module.exports = function(app, recipeData) {
         // Retrieving the selected recipe name from the dropdown options
         const reviewed_recipe = req.body.existing_recipes;
 
-        // saving the review data into the database
+        // Saving the review data into the database
+        // Using Insert Into Select to input the recipe_id of the selected recipe (from dropdown) based on the recipe_name
         let sqlquery = `INSERT INTO 
                         reviews(user_id, review_title, review_content, rating, recipe_id)
                         VALUES(?, ?, ?, ?, (SELECT recipe_id FROM recipes WHERE recipe_name = ?))`
         
-        // Getting the user_id from above so that it can be added to the review tables
+        // Getting the user_id and reviewed_recipe from above so that it can be added to the review tables
         // Selecting and sanitizing the fields that will be added into the review database
         let newrecord = [user_id, req.sanitize(req.body.title), req.sanitize(req.body.content), req.sanitize(req.body.rating), reviewed_recipe]
 
@@ -343,31 +373,37 @@ module.exports = function(app, recipeData) {
             }
             else {
                 // Message that will be sent to confirm recipe has successfully added
-                res.send('Review has been successfully added! View it here: <a href="/reviews"> View Reviews </a> or return to the home page <a href='+'./'+'>Home</a>.');
+                res.send('Review has been successfully added! View it here: <a href="/reviews"> View Reviews </a> or return to the home page <a href= "./"> Home </a>.');
             }
         });
     });
 
     // Search page
-    app.get('/search', function(req, res) {
+    app.get('/search', redirectLogin, function(req, res) {
         res.render('search.ejs', recipeData);
     });
     // Route that will handle the results of the search query
-    app.get('/search-result', function(req, res) {
-        // defining the keyword variable and sanitizing it
+    app.get('/search-result', redirectLogin, function(req, res) {
+        // retrieving the keyword (from search) and sanitizing it
         const keyword = req.sanitize(req.query.keyword);
 
         // querying the database to retrieve the data based on the keyword
         // using ? as a placeholder to prevent SQL Injection
+        // using wildcards (%) to search for particular recipe that contains keyword anywhere within the recipe_name
         let sqlquery = "SELECT * FROM recipes WHERE recipe_name LIKE %?%";
 
         db.query(sqlquery, keyword, (err, result) => {
             if(err) {
+                // Sending message if recipe_name cannot be found within database
+                // User is prompted to retry
                 res.send('Recipe name not found. <a href="/search"> Please try again! </a>')
             }
             else {
+                // Looping through availableRecipes to see if keyword matches data
+                // Storing within result
                 let newData = Object.assign({}, recipeData, {availableRecipes:result});
                 console.log(newData);
+                // Rendering page
                 res.render('list_recipes.ejs', newData);
             }
         });
@@ -382,7 +418,7 @@ module.exports = function(app, recipeData) {
                     if (err) {
                         res.redirect('./');
                     }
-                    // Return results as a JSON object
+                    // Returns and formats result as a JSON object
                     res.json(result); 
                 });
         

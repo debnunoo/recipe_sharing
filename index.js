@@ -13,9 +13,11 @@ var sanitizer = require('express-sanitizer');
 
 // Creating the express application object
 const app = express()
+// Establishing a port number
 const port = 8000
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(sanitizer());
+// Establishing the session within the middleware
 app.use(session({
     secret: 'somerandomstuff',
     resave: false,

@@ -4,7 +4,12 @@
     <link rel="stylesheet" type="text/css" href="/main.css" />
 </head>
 <header>
-    <img src="/logo.png" alt="Website logo">
+    <!-- Making the logo clickable and redirecting to homepage -->
+    <div>
+        <a href="./">
+            <img src="/logo.png" alt="Website logo">
+        </a>
+    </div>
 </header>
 <body>
     <h1> Reviews </h1>
@@ -33,13 +38,13 @@
             <% }) %>
     </table>
     <br>
-    <!-- window.location.href adapted from https://www.w3schools.com/howto/howto_js_redirect_webpage.asp -->
+    <!-- window.location.href adapted from (How To – Redirect to Another Webpage, n.d) -->
     <!-- Adding a button here so the user can add the recipe if they wish after viewing the list of recipes available on the page -->
     <button class="add_review" type="button" onclick="window.location.href = 'add_review'">Add Review</button>
 </body>
 <footer>
     <!-- adding a back button to allow users to navigate back to the previous page if they wish -->
-    <div class="back_button">
+    <div class="back-button">
         <a href="javascript:history.back()">
             <img src="/back_button.png" alt="Back Button" width="30px" height="30px">
         </a>

@@ -23,15 +23,20 @@ header img {
 }
 
 /* setting position of the back button image */
-.back_button {
+.back-button {
     padding-top: 200px;
-    /* position: sticky; */
 }
 
 /* removing background colour when hovering over back button image,
-so setting it to the original background colour */
+so setting it to none */
 [href="javascript:history.back()"]:hover {
-    background-color: #FAF9F6;
+    background: none;
+}
+
+/* removing background colour when hovering over logo image,
+so setting it to none */
+[href="./"]:hover {
+    background: none;
 }
 
 /* formatting the web links to a more suitable and readable style */
@@ -64,14 +69,13 @@ makes it more clear */
     background-color: #FAF9F6;
 }
 
-/* Formatting and styling all forms to */
+/* Formatting and styling all forms */
 form {
     text-align: center;
     font-family: 'Courier New', Courier, monospace;
     font-size: medium;
     margin-bottom: 50px;
     margin-top: 50px;
-    /* display:inline-block; */
 }
 
 /* Styling all h1 tags to help make users aware of page headers */
@@ -82,44 +86,41 @@ h1 {
     font-size: 40px;
 }
 
-/* table {
-    border-collapse: collapse;
-    border: 1px solid black;
-} */
-
+/* Formatting the table, its rows and cells */
 table, tr, td {
     border: 1px solid black;
     border-collapse: collapse;
     border-spacing: 90px;
 
 }
+
+/* Moving review table to centre of page */
 .listing_review {
     margin-left: auto;
     margin-right: auto;
 }
 
-.add_review {
-    margin-left: auto;
-    margin-right: auto;
-}
-
+/* Formatting text within 'About Us' page */
 #about-us {
     font-size: 20px;
     font-family: cursive;
     text-indent: 10px;
 }
 
+/* Formatting cells within the tables */
 td {
     font-family: cursive;
     font-size: 12px;
     text-align: start;
 }
 
-tr {
+/* Formatting table headers within the tables */
+th {
     text-align: center;
 }
 
-input[type=submit] {
+/* Formatting the submit field */
+input[type=submit], button[type=button] {
     background: transparent;
     border-radius: 20px;
     font-weight: bold;
@@ -130,7 +131,27 @@ input[type=submit] {
     border-style: solid;
 }
 
+/* Formatting the submit field when being hovered */
 input[type=submit]:hover {
     background-color: cadetblue;
+    cursor: pointer;
+}
+
+/* Formatting the buttons */
+button[type=button] {
+    float: right;
+    margin-right: 200px;
+    font-size: 16px;
+    background-color:lightgreen;
+}
+
+/* Adjusting the 'Add Recipe' button on the 'list_recipes' page */
+#recipe_add {
+    margin-right: 50px;
+}
+
+/* Formatting buttons when hovered */
+button[type=button]:hover {
+    background-color: lightgreen;
     cursor: pointer;
 }
