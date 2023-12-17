@@ -56,7 +56,6 @@ module.exports = function(app, recipeData) {
         })
     ];
 
-    // g.jones, princejealous21
     // Route that handles user's registrations, including the validation above
     app.post('/registered', signupValidation, function(req, res) {
         const errors = validationResult(req);
